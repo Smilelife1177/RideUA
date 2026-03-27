@@ -1,0 +1,85 @@
+.my-rides {
+    display: flex;
+    flex-direction: column;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+
+.my-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+}
+
+.my-card.inactive {
+    opacity: 0.5;
+}
+
+.my-route {
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.my-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.status-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 20px;
+}
+
+.status-badge.active {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.status-badge.cancelled {
+    background: #fff0f0;
+    color: #c0392b;
+}
+
+.status-badge.pending {
+    background: #fff8e1;
+    color: #e65100;
+}
+
+.status-badge.confirmed {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.cancel-btn {
+    background: none;
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.empty-section {
+    font-size: 14px;
+    color: var(--text-muted);
+    padding: 16px;
+    text-align: center;
+    background: var(--gray);
+    border-radius: var(--radius);
+}

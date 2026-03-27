@@ -1,0 +1,168 @@
+.ride-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ride-card:hover {
+    border-color: #ccc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.ride-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.ride-route {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.city {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.route-arrow {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.time-badge {
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.ride-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.driver-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+}
+
+.driver-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.driver-name {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.driver-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.right-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.seats {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.price {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--green);
+}
+
+.ride-date {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+.ride-details {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.comment {
+    font-size: 13px;
+    color: var(--text-muted);
+    background: var(--gray);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+}
+
+.book-btn {
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.book-btn:disabled {
+    opacity: 0.6;
+}
+
+.tg-link {
+    display: block;
+    text-align: center;
+    color: var(--green);
+    font-size: 14px;
+    text-decoration: none;
+    padding: 8px;
+}
+
+.own-badge,
+.full-badge {
+    text-align: center;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+}
+
+.own-badge {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.full-badge {
+    background: #fff3f3;
+    color: #c0392b;
+}
