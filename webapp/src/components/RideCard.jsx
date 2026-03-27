@@ -76,6 +76,7 @@ export default function RideCard({ ride, tgUser, onBook }) {
                     {ride.comment && (
                         <div className="comment">💬 {ride.comment}</div>
                     )}
+
                     {isOwnRide ? (
                         <div className="own-badge">Це твоя поїздка</div>
                     ) : ride.seats_left === 0 ? (
@@ -85,22 +86,22 @@ export default function RideCard({ ride, tgUser, onBook }) {
                             {booking ? 'Відправляємо...' : '✅ Забронювати місце'}
                         </button>
                     )}
-                    {driver?.username && (
 
-                        className = "tg-link"
-              href={`https://t.me/${driver.username}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={e => e.stopPropagation()}
-            >
-                    📩 Написати водію
-                </a>
+                    {driver?.username && (
+                        <a
+                            className="tg-link"
+                            href={`https://t.me/${driver.username}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            📩 Написати водію
+                        </a>
+                    )}
+                </div>
             )}
         </div>
     )
-}
-    </div >
-  )
 }
 
 function stringToColor(str) {
