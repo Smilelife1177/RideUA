@@ -33,8 +33,18 @@ export default function MyRides({ tgUser }) {
 
     async function cancelRide(id) {
         if (!confirm('Скасувати поїздку?')) return
-        await supabase.from('rides').update({ status: 'cancelled' }).eq('id', id)
-        fetchData()
+
+        const { error } = await supabase
+            .from('rides')
+            .update({ status: 'cancelled' })
+            .eq('id', id)
+            .eq('driver_id', tgUser.id)  // захист — тільки свої
+
+        if (error) {
+            alert('Помилка: ' + error.message)
+        } else {
+            fetchData()  // оновлюємо список
+        }
     }
 
     if (loading) return <div className="loading">Завантаження...</div>

@@ -19,9 +19,10 @@ export default function RideList({ tgUser }) {
             .select(`
         *,
         users (name, username, rating, trips_count)
-      `)
-            .eq('status', 'active')
-            .gte('departure_time', new Date().toISOString())
+        `)
+            .eq('status', 'active')          // тільки активні
+            .gt('seats_left', 0)             // є вільні місця
+            .gte('departure_time', new Date().toISOString())  // тільки майбутні
             .order('departure_time', { ascending: true })
 
         if (!error) setRides(data || [])

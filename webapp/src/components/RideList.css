@@ -1,12 +1,15 @@
 .search-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 14px;
+    width: 100%;
 }
 
 .search-input {
-    flex: 1;
+    width: 100%;
+    min-width: 0;
     background: var(--gray);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -23,6 +26,7 @@
 .search-arrow {
     color: var(--text-muted);
     flex-shrink: 0;
+    text-align: center;
 }
 
 .loading {
