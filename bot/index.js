@@ -13,7 +13,7 @@ bot.command("start", async (ctx) => {
                 inline_keyboard: [[
                     {
                         text: "🚗 Відкрити RideUA",
-                        web_app: { url: "https://example.com" } // поки заглушка, потім замінимо
+                        web_app: { url: "https://rideua.vercel.app" }
                     }
                 ]]
             }
