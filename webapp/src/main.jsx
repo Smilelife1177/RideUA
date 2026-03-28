@@ -3,9 +3,15 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
 
-// Ініціалізуємо Telegram Mini App
-window.Telegram.WebApp.ready()
-window.Telegram.WebApp.expand() // розгортаємо на весь екран
+const tg = window.Telegram?.WebApp
+
+if (tg) {
+  tg.ready()
+  tg.expand()
+  // Примусово білий фон незалежно від теми Telegram
+  tg.setBackgroundColor('#ffffff')
+  tg.setHeaderColor('#ffffff')
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
