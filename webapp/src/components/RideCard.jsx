@@ -17,6 +17,21 @@ export default function RideCard({ ride, tgUser, onBook }) {
         if (!tgUser || isOwnRide) return
         setBooking(true)
 
+        // Перевіряємо чи вже є бронювання на цю поїздку
+        const { data: existing } = await supabase
+            .from('bookings')
+            .select('id')
+            .eq('ride_id', ride.id)
+            .eq('passenger_id', tgUser.id)
+            .neq('status', 'cancelled')  // не враховуємо скасовані
+            .single()
+
+        if (existing) {
+            alert('Ти вже забронював місце в цій поїздці!')
+            setBooking(false)
+            return
+        }
+
         // Зберігаємо юзера якщо новий
         await supabase.from('users').upsert({
             id: tgUser.id,
@@ -31,7 +46,6 @@ export default function RideCard({ ride, tgUser, onBook }) {
         })
 
         if (!error) {
-            // Зменшуємо кількість місць
             await supabase.from('rides')
                 .update({ seats_left: ride.seats_left - 1 })
                 .eq('id', ride.id)
