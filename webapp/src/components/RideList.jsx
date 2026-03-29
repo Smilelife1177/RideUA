@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import RideCard from './RideCard'
 import './RideList.css'
+import CityInput from './CityInput'
 
 export default function RideList({ tgUser }) {
     const [rides, setRides] = useState([])
@@ -40,18 +41,16 @@ export default function RideList({ tgUser }) {
     return (
         <div className="ride-list">
             <div className="search-row">
-                <input
-                    className="search-input"
+                <CityInput
                     placeholder="Звідки"
                     value={filter.from}
-                    onChange={e => setFilter(f => ({ ...f, from: e.target.value }))}
+                    onChange={val => setFilter(f => ({ ...f, from: val }))}
                 />
                 <span className="search-arrow">→</span>
-                <input
-                    className="search-input"
+                <CityInput
                     placeholder="Куди"
                     value={filter.to}
-                    onChange={e => setFilter(f => ({ ...f, to: e.target.value }))}
+                    onChange={val => setFilter(f => ({ ...f, to: val }))}
                 />
             </div>
 

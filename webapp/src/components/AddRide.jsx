@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../supabase'
 import './AddRide.css'
+import CityInput from './CityInput'
 
 export default function AddRide({ tgUser, onDone }) {
     const [form, setForm] = useState({
@@ -62,14 +63,20 @@ export default function AddRide({ tgUser, onDone }) {
 
             <div className="form-group">
                 <label>Звідки *</label>
-                <input placeholder="Біла Церква" value={form.from_city}
-                    onChange={e => update('from_city', e.target.value)} />
+                <CityInput
+                    placeholder="Біла Церква"
+                    value={form.from_city}
+                    onChange={val => update('from_city', val)}
+                />
             </div>
 
             <div className="form-group">
                 <label>Куди *</label>
-                <input placeholder="Київ" value={form.to_city}
-                    onChange={e => update('to_city', e.target.value)} />
+                <CityInput
+                    placeholder="Київ"
+                    value={form.to_city}
+                    onChange={val => update('to_city', val)}
+                />
             </div>
 
             <div className="form-row-2">

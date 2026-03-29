@@ -1,17 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import './RideCard.css'
 
 export default function RideCard({ ride, tgUser, onBook }) {
     const [expanded, setExpanded] = useState(false)
     const [booking, setBooking] = useState(false)
+    const [bookingStatus, setBookingStatus] = useState(null) // null | 'pending' | 'confirmed'
 
     const driver = ride.users
     const date = new Date(ride.departure_time)
     const dateStr = date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' })
     const timeStr = date.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })
-
     const isOwnRide = tgUser?.id === ride.driver_id
+
+    useEffect(() => {
+        if (tgUser && expanded) checkBookingStatus()
+    }, [tgUser, expanded])
+
+    async function checkBookingStatus() {
+        const { data } = await supabase
+            .from('bookings')
+            .select('status')
+            .eq('ride_id', ride.id)
+            .eq('passenger_id', tgUser.id)
+            .single()
+
+        if (data) setBookingStatus(data.status)
+        else setBookingStatus(null)
+    }
 
     async function handleBook() {
         if (!tgUser || isOwnRide) return
@@ -28,12 +44,41 @@ export default function RideCard({ ride, tgUser, onBook }) {
             passenger_id: tgUser.id
         })
 
-        if (error) {
-            alert('Помилка: ' + error.message)
+        if (!error) {
+            setBookingStatus('pending')
+            onBook()
         } else {
-            onBook()  // оновлюємо список — але місця НЕ чіпаємо
+            alert('Помилка: ' + error.message)
         }
         setBooking(false)
+    }
+
+    function renderBookingButton() {
+        if (isOwnRide) {
+            return <div className="own-badge">Це твоя поїздка</div>
+        }
+        if (ride.seats_left === 0 && bookingStatus !== 'confirmed') {
+            return <div className="full-badge">Місць немає</div>
+        }
+        if (bookingStatus === 'confirmed') {
+            return (
+                <div className="confirmed-badge">
+                    ✅ Водій підтвердив! Оплата готівкою при посадці 💵
+                </div>
+            )
+        }
+        if (bookingStatus === 'pending') {
+            return (
+                <div className="pending-badge">
+                    ⏳ Запит відправлено — чекаємо відповіді водія
+                </div>
+            )
+        }
+        return (
+            <button className="book-btn" onClick={handleBook} disabled={booking}>
+                {booking ? 'Відправляємо...' : '✅ Забронювати місце'}
+            </button>
+        )
     }
 
     return (
@@ -70,16 +115,7 @@ export default function RideCard({ ride, tgUser, onBook }) {
                     {ride.comment && (
                         <div className="comment">💬 {ride.comment}</div>
                     )}
-
-                    {isOwnRide ? (
-                        <div className="own-badge">Це твоя поїздка</div>
-                    ) : ride.seats_left === 0 ? (
-                        <div className="full-badge">Місць немає</div>
-                    ) : (
-                        <button className="book-btn" onClick={handleBook} disabled={booking}>
-                            {booking ? 'Відправляємо...' : '✅ Забронювати місце'}
-                        </button>
-                    )}
+                    {renderBookingButton()}
 
                     {driver?.username && (
                         <a
