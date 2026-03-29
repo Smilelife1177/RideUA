@@ -3,6 +3,7 @@ import { supabase } from './supabase'
 import RideList from './components/RideList'
 import AddRide from './components/AddRide'
 import MyRides from './components/MyRides'
+import Profile from './components/Profile'
 import './App.css'
 
 export default function App() {
@@ -55,16 +56,15 @@ export default function App() {
         {tab === 'rides' && <RideList tgUser={tgUser} />}
         {tab === 'add' && <AddRide tgUser={tgUser} onDone={() => setTab('rides')} />}
         {tab === 'my' && <MyRides tgUser={tgUser} />}
+        {tab === 'profile' && <Profile tgUser={tgUser} />}
       </main>
 
       <nav className="bottom-nav">
         <button className={`nav-item ${tab === 'rides' ? 'active' : ''}`} onClick={() => setTab('rides')}>
-          <span>🔍</span>
-          <span>Поїздки</span>
+          <span>🔍</span><span>Поїздки</span>
         </button>
         <button className={`nav-item ${tab === 'add' ? 'active' : ''}`} onClick={() => setTab('add')}>
-          <span>➕</span>
-          <span>Додати</span>
+          <span>➕</span><span>Додати</span>
         </button>
         <button
           className={`nav-item ${tab === 'my' ? 'active' : ''}`}
@@ -83,6 +83,9 @@ export default function App() {
             )}
           </span>
           <span>Мої</span>
+        </button>
+        <button className={`nav-item ${tab === 'profile' ? 'active' : ''}`} onClick={() => setTab('profile')}>
+          <span>👤</span><span>Профіль</span>
         </button>
       </nav>
     </div>
