@@ -78,10 +78,11 @@ export default function MyRides({ tgUser }) {
             return
         }
 
-        if (action === 'reject' && booking.ride) {
+        if (action === 'confirm' && booking.ride) {
+            // Зменшуємо місця тільки при підтвердженні
             await supabase
                 .from('rides')
-                .update({ seats_left: booking.ride.seats_left + 1 })
+                .update({ seats_left: booking.ride.seats_left - 1 })
                 .eq('id', booking.ride_id)
         }
 
