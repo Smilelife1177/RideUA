@@ -157,3 +157,15 @@
     font-size: 14px;
     font-weight: 500;
 }
+
+.request-card.confirmed {
+    border-color: #a8e6c8;
+    background: #f6fffb;
+    opacity: 0.85;
+}
+
+.request-card.rejected {
+    border-color: var(--border);
+    background: var(--gray);
+    opacity: 0.6;
+}

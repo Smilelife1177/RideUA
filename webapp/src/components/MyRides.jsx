@@ -37,7 +37,7 @@ export default function MyRides({ tgUser }) {
                 .from('bookings')
                 .select('*, users(name, username)')
                 .in('ride_id', rideIds)
-                .eq('status', 'pending')
+                .in('status', ['pending', 'confirmed', 'cancelled'])
                 .order('created_at', { ascending: false })
 
             const requestsWithRide = (requests || []).map(req => ({
@@ -98,42 +98,54 @@ export default function MyRides({ tgUser }) {
                 <section className="requests-section">
                     <h3 className="section-title">
                         🔔 Запити на бронювання
-                        <span className="badge">{incomingRequests.length}</span>
+                        {incomingRequests.filter(r => r.status === 'pending').length > 0 && (
+                            <span className="badge">
+                                {incomingRequests.filter(r => r.status === 'pending').length}
+                            </span>
+                        )}
                     </h3>
                     {incomingRequests.map(req => {
                         const passenger = req.users
+                        const isPending = req.status === 'pending'
+                        const isConfirmed = req.status === 'confirmed'
+
                         return (
-                            <div key={req.id} className="request-card">
+                            <div
+                                key={req.id}
+                                className={`request-card ${isConfirmed ? 'confirmed' : ''} ${!isPending && !isConfirmed ? 'rejected' : ''}`}
+                            >
                                 <div className="request-route">
                                     {req.ride?.from_city} → {req.ride?.to_city}
+                                    {!isPending && (
+                                        <span className={`status-badge ${req.status}`}>
+                                            {isConfirmed ? '✅ Прийнято' : '❌ Відхилено'}
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="request-passenger">
                                     👤 {passenger?.name || 'Невідомий'}
                                     {passenger?.username && (
-                                        <a
-                                            href={`https://t.me/${passenger.username}`}
-                                            className="tg-link-small"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
+                                        <a href={`https://t.me/${passenger.username}`} className="tg-link-small">
                                             @{passenger.username}
                                         </a>
                                     )}
                                 </div>
-                                <div className="request-actions">
-                                    <button
-                                        className="confirm-btn"
-                                        onClick={() => handleRequest(req.id, 'confirm', req)}
-                                    >
-                                        ✅ Підтвердити
-                                    </button>
-                                    <button
-                                        className="reject-btn"
-                                        onClick={() => handleRequest(req.id, 'reject', req)}
-                                    >
-                                        ❌ Відхилити
-                                    </button>
-                                </div>
+                                {isPending && (
+                                    <div className="request-actions">
+                                        <button
+                                            className="confirm-btn"
+                                            onClick={() => handleRequest(req.id, 'confirm', req)}
+                                        >
+                                            ✅ Підтвердити
+                                        </button>
+                                        <button
+                                            className="reject-btn"
+                                            onClick={() => handleRequest(req.id, 'reject', req)}
+                                        >
+                                            ❌ Відхилити
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         )
                     })}
