@@ -46,3 +46,18 @@
     color: var(--text-muted);
     margin-top: 2px;
 }
+
+.city-loading {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.city-input-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}

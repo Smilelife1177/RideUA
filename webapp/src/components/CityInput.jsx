@@ -1,65 +1,13 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import './CityInput.css'
-
-const CITIES = [
-    { name: 'Київ', region: 'м. Київ' },
-    { name: 'Харків', region: 'Харківська область' },
-    { name: 'Одеса', region: 'Одеська область' },
-    { name: 'Дніпро', region: 'Дніпропетровська область' },
-    { name: 'Запоріжжя', region: 'Запорізька область' },
-    { name: 'Львів', region: 'Львівська область' },
-    { name: 'Кривий Ріг', region: 'Дніпропетровська область' },
-    { name: 'Миколаїв', region: 'Миколаївська область' },
-    { name: 'Маріуполь', region: 'Донецька область' },
-    { name: 'Луганськ', region: 'Луганська область' },
-    { name: 'Вінниця', region: 'Вінницька область' },
-    { name: 'Херсон', region: 'Херсонська область' },
-    { name: 'Полтава', region: 'Полтавська область' },
-    { name: 'Чернігів', region: 'Чернігівська область' },
-    { name: 'Черкаси', region: 'Черкаська область' },
-    { name: 'Суми', region: 'Сумська область' },
-    { name: 'Житомир', region: 'Житомирська область' },
-    { name: 'Рівне', region: 'Рівненська область' },
-    { name: 'Івано-Франківськ', region: 'Івано-Франківська область' },
-    { name: 'Тернопіль', region: 'Тернопільська область' },
-    { name: 'Луцьк', region: 'Волинська область' },
-    { name: 'Ужгород', region: 'Закарпатська область' },
-    { name: 'Хмельницький', region: 'Хмельницька область' },
-    { name: 'Чернівці', region: 'Чернівецька область' },
-    { name: 'Кропивницький', region: 'Кіровоградська область' },
-    { name: 'Біла Церква', region: 'Київська область' },
-    { name: 'Бориспіль', region: 'Київська область' },
-    { name: 'Бровари', region: 'Київська область' },
-    { name: 'Васильків', region: 'Київська область' },
-    { name: 'Обухів', region: 'Київська область' },
-    { name: 'Фастів', region: 'Київська область' },
-    { name: 'Переяслав', region: 'Київська область' },
-    { name: 'Умань', region: 'Черкаська область' },
-    { name: 'Кам\'янець-Подільський', region: 'Хмельницька область' },
-    { name: 'Мукачево', region: 'Закарпатська область' },
-    { name: 'Дрогобич', region: 'Львівська область' },
-    { name: 'Стрий', region: 'Львівська область' },
-    { name: 'Нікополь', region: 'Дніпропетровська область' },
-    { name: 'Кременчук', region: 'Полтавська область' },
-    { name: 'Конотоп', region: 'Сумська область' },
-    { name: 'Шостка', region: 'Сумська область' },
-    { name: 'Ніжин', region: 'Чернігівська область' },
-    { name: 'Бердичів', region: 'Житомирська область' },
-    { name: 'Коростень', region: 'Житомирська область' },
-    { name: 'Дубно', region: 'Рівненська область' },
-    { name: 'Ковель', region: 'Волинська область' },
-    { name: 'Нововолинськ', region: 'Волинська область' },
-    { name: 'Мелітополь', region: 'Запорізька область' },
-    { name: 'Бердянськ', region: 'Запорізька область' },
-    { name: 'Ізмаїл', region: 'Одеська область' },
-    { name: 'Южне', region: 'Одеська область' },
-]
 
 export default function CityInput({ placeholder, value, onChange }) {
     const [query, setQuery] = useState(value || '')
     const [suggestions, setSuggestions] = useState([])
     const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
     const ref = useRef(null)
+    const timerRef = useRef(null)
 
     useEffect(() => {
         function handleClick(e) {
@@ -69,24 +17,60 @@ export default function CityInput({ placeholder, value, onChange }) {
         return () => document.removeEventListener('mousedown', handleClick)
     }, [])
 
-    function handleInput(e) {
-        const val = e.target.value
-        setQuery(val)
-        onChange('')  // скидаємо вибране місто
-
-        if (val.length < 1) {
+    const search = useCallback(async (val) => {
+        if (val.length < 2) {
             setSuggestions([])
             setOpen(false)
             return
         }
 
-        const filtered = CITIES.filter(c =>
-            c.name.toLowerCase().startsWith(val.toLowerCase()) ||
-            c.name.toLowerCase().includes(val.toLowerCase())
-        ).slice(0, 5)
+        setLoading(true)
+        try {
+            const res = await fetch(
+                `https://nominatim.openstreetmap.org/search?` +
+                `q=${encodeURIComponent(val)}&` +
+                `countrycodes=ua&` +
+                `addressdetails=1&` +
+                `limit=6&` +
+                `format=json&` +
+                `accept-language=uk`,
+                { headers: { 'Accept-Language': 'uk' } }
+            )
+            const data = await res.json()
 
-        setSuggestions(filtered)
-        setOpen(filtered.length > 0)
+            // Фільтруємо тільки населені пункти і форматуємо
+            const results = data
+                .filter(item => ['city', 'town', 'village', 'hamlet', 'suburb'].includes(item.type) ||
+                    ['city', 'town', 'village', 'hamlet'].includes(item.addresstype))
+                .map(item => {
+                    const a = item.address
+                    const name = a.city || a.town || a.village || a.hamlet || a.suburb || item.display_name.split(',')[0]
+                    const region = a.state || ''
+                    const district = a.county || ''
+                    const sub = district && district !== region ? district : region
+                    return { name, sub, display: item.display_name }
+                })
+                // Прибираємо дублікати по name+sub
+                .filter((item, idx, arr) =>
+                    arr.findIndex(x => x.name === item.name && x.sub === item.sub) === idx
+                )
+
+            setSuggestions(results)
+            setOpen(results.length > 0)
+        } catch (e) {
+            setSuggestions([])
+        }
+        setLoading(false)
+    }, [])
+
+    function handleInput(e) {
+        const val = e.target.value
+        setQuery(val)
+        onChange('')
+
+        // Debounce — чекаємо 400мс після останнього символу
+        clearTimeout(timerRef.current)
+        timerRef.current = setTimeout(() => search(val), 400)
     }
 
     function selectCity(city) {
@@ -106,6 +90,7 @@ export default function CityInput({ placeholder, value, onChange }) {
                 onFocus={() => suggestions.length > 0 && setOpen(true)}
                 autoComplete="off"
             />
+            {loading && <div className="city-loading">🔍</div>}
             {open && (
                 <div className="city-dropdown">
                     {suggestions.map((city, i) => (
@@ -116,7 +101,7 @@ export default function CityInput({ placeholder, value, onChange }) {
                             onClick={() => selectCity(city)}
                         >
                             <span className="city-option-name">{city.name}</span>
-                            <span className="city-option-region">{city.region}</span>
+                            <span className="city-option-region">{city.sub}</span>
                         </div>
                     ))}
                 </div>
