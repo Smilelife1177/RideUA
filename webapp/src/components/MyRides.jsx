@@ -35,14 +35,14 @@ export default function MyRides({ tgUser }) {
             const rideIds = rides.map(r => r.id)
             const { data: requests } = await supabase
                 .from('bookings')
-                .select('*, users(name, username)')
+                .select('*, users(name, username), rides(from_city, to_city, departure_time, price, seats_left)')
                 .in('ride_id', rideIds)
                 .in('status', ['pending', 'confirmed', 'cancelled'])
                 .order('created_at', { ascending: false })
 
             const requestsWithRide = (requests || []).map(req => ({
                 ...req,
-                ride: rides.find(r => r.id === req.ride_id)
+                ride: req.rides || rides.find(r => r.id === req.ride_id)
             }))
             setIncomingRequests(requestsWithRide)
         }
@@ -130,18 +130,23 @@ export default function MyRides({ tgUser }) {
                                         </a>
                                     )}
                                 </div>
+
+                                {req.ride && (() => {
+                                    const date = new Date(req.ride.departure_time)
+                                    return (
+                                        <div className="my-meta" style={{ marginTop: 4 }}>
+                                            {date.toLocaleDateString('uk-UA')} о {date.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+                                            · {req.ride.price} ₴
+                                        </div>
+                                    )
+                                })()}
+
                                 {isPending && (
                                     <div className="request-actions">
-                                        <button
-                                            className="confirm-btn"
-                                            onClick={() => handleRequest(req.id, 'confirm', req)}
-                                        >
+                                        <button className="confirm-btn" onClick={() => handleRequest(req.id, 'confirm', req)}>
                                             ✅ Підтвердити
                                         </button>
-                                        <button
-                                            className="reject-btn"
-                                            onClick={() => handleRequest(req.id, 'reject', req)}
-                                        >
+                                        <button className="reject-btn" onClick={() => handleRequest(req.id, 'reject', req)}>
                                             ❌ Відхилити
                                         </button>
                                     </div>
