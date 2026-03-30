@@ -18,9 +18,9 @@ export default function RideList({ tgUser }) {
         const { data, error } = await supabase
             .from('rides')
             .select(`
-        *,
-        users (name, username, rating, trips_count)
-        `)
+                *,
+                users (name, username, rating, trips_count, car_brand, car_model, car_year, car_plate)
+            `)
             .eq('status', 'active')          // тільки активні
             .gt('seats_left', 0)             // є вільні місця
             .gte('departure_time', new Date().toISOString())  // тільки майбутні

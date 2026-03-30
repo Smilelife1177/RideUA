@@ -112,3 +112,109 @@
     color: var(--text-muted);
     margin-top: 6px;
 }
+
+.car-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+}
+
+.car-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.edit-car-btn {
+    background: none;
+    border: 1px solid var(--green);
+    color: var(--green);
+    border-radius: var(--radius-sm);
+    padding: 5px 12px;
+    font-size: 13px;
+}
+
+.car-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.car-main {
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.car-year {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+}
+
+.car-plate {
+    background: #f0f4ff;
+    border: 1px solid #c5d0f0;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #1a3a8f;
+}
+
+.car-form {
+    margin-top: 4px;
+}
+
+.car-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.car-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.car-form .form-group label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.car-form .form-group input {
+    background: var(--gray);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 11px;
+    font-size: 14px;
+    outline: none;
+}
+
+.car-form .form-group input:focus {
+    border-color: var(--green);
+    background: white;
+}
+
+.save-car-btn {
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 11px;
+    font-size: 14px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.save-car-btn:disabled {
+    opacity: 0.6;
+}

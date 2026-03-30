@@ -100,6 +100,12 @@ export default function RideCard({ ride, tgUser, onBook }) {
                     <div className="driver-info">
                         <span className="driver-name">{driver?.name || 'Невідомо'}</span>
                         <span className="driver-sub">⭐ {driver?.rating?.toFixed(1)} · {driver?.trips_count} поїздок</span>
+                        {driver?.car_brand && driver?.car_model && (
+                            <span className="driver-sub">
+                                🚗 {driver.car_brand} {driver.car_model}
+                                {driver.car_year ? `, ${driver.car_year}` : ''}
+                            </span>
+                        )}
                     </div>
                 </div>
                 <div className="right-meta">
