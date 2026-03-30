@@ -25,35 +25,42 @@ export default function AddRide({ tgUser, onDone }) {
             return
         }
 
+        if (!tgUser) {
+            alert('Помилка авторизації')
+            return
+        }
+
         setLoading(true)
 
-        // Зберігаємо водія
-        await supabase.from('users').upsert({
-            id: tgUser.id,
-            name: tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : ''),
-            username: tgUser.username || null
-        }, { onConflict: 'id' })
+        try {
+            await supabase.from('users').upsert({
+                id: tgUser.id,
+                name: tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : ''),
+                username: tgUser.username || null
+            }, { onConflict: 'id' })
 
-        // Створюємо поїздку
-        const departure_time = new Date(`${form.date}T${form.time}`).toISOString()
-        const { error } = await supabase.from('rides').insert({
-            driver_id: tgUser.id,
-            from_city: form.from_city,
-            to_city: form.to_city,
-            departure_time,
-            seats_total: parseInt(form.seats),
-            seats_left: parseInt(form.seats),
-            price: parseInt(form.price),
-            comment: form.comment || null
-        })
+            const departure_time = new Date(`${form.date}T${form.time}`).toISOString()
 
-        setLoading(false)
+            const { error } = await supabase.from('rides').insert({
+                driver_id: tgUser.id,
+                from_city: form.from_city,
+                to_city: form.to_city,
+                departure_time,
+                seats_total: parseInt(form.seats),
+                seats_left: parseInt(form.seats),
+                price: parseInt(form.price),
+                comment: form.comment || null
+            })
 
-        if (error) {
-            alert('Помилка: ' + error.message)
-        } else {
+            if (error) {
+                alert('Помилка: ' + error.message)
+                return
+            }
+
             alert('🎉 Поїздку опубліковано!')
-            onDone()
+        } finally {
+            setLoading(false)
+            onDone() // викликаємо тільки після того як loading знятий
         }
     }
 
