@@ -134,10 +134,15 @@ export default function MyRides({ tgUser }) {
                                 {req.ride && (() => {
                                     const date = new Date(req.ride.departure_time)
                                     return (
-                                        <div className="my-meta" style={{ marginTop: 4 }}>
-                                            {date.toLocaleDateString('uk-UA')} о {date.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
-                                            · {req.ride.price} ₴
-                                        </div>
+                                        <>
+                                            <div className="my-meta" style={{ marginTop: 4 }}>
+                                                {date.toLocaleDateString('uk-UA')} о {date.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
+                                                · {req.ride.price} ₴
+                                            </div>
+                                            {req.ride.comment && (
+                                                <div className="my-comment">💬 {req.ride.comment}</div>
+                                            )}
+                                        </>
                                     )
                                 })()}
 
@@ -208,6 +213,9 @@ export default function MyRides({ tgUser }) {
                                 {date.toLocaleDateString('uk-UA')} о {date.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}
                                 · {ride.price} ₴
                             </div>
+                            {ride.comment && (
+                                <div className="my-comment">💬 {ride.comment}</div>
+                            )}
                         </div>
                     )
                 })}

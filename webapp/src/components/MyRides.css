@@ -169,3 +169,12 @@
     background: var(--gray);
     opacity: 0.6;
 }
+
+.my-comment {
+    font-size: 13px;
+    color: var(--text-muted);
+    background: var(--gray);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    margin-top: 6px;
+}
