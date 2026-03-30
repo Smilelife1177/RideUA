@@ -77,8 +77,9 @@ export default function CityInput({ placeholder, value, onChange }) {
     }
 
     function selectCity(city) {
-        setQuery(city.name)
-        onChange(city.name)
+        const fullName = city.sub ? `${city.name}, ${city.sub}` : city.name
+        setQuery(fullName)
+        onChange(fullName)
         setSuggestions([])
         setOpen(false)
     }
