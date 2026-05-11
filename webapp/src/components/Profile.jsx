@@ -77,7 +77,12 @@ export default function Profile({ tgUser }) {
             <div className="profile-card">
                 <div className="profile-avatar">{name[0]}</div>
                 <div className="profile-name">{name}</div>
-                {tgUser.username && <div className="profile-username">@{tgUser.username}</div>}
+                {tgUser.username && (
+                    <div className="profile-username">@{tgUser.username}</div>
+                )}
+                {profile?.phone && (
+                    <div className="profile-phone">📱 {profile.phone}</div>
+                )}
                 <div className="profile-stars">{renderStars(rating)}</div>
                 <div className="profile-rating-text">{rating.toFixed(1)} · {tripsCount} поїздок</div>
             </div>

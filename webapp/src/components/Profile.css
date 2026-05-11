@@ -218,3 +218,9 @@
 .save-car-btn:disabled {
     opacity: 0.6;
 }
+
+.profile-phone {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
