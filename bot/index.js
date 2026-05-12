@@ -4,11 +4,12 @@ import { createClient } from "@supabase/supabase-js";
 dotenv.config();
 
 const bot = new Bot(process.env.BOT_TOKEN);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_KEY
-);
+// Зберігаємо в константу одразу після dotenv.config()
+const WEBAPP_URL = process.env.WEBAPP_URL;
+console.log('WEBAPP_URL:', WEBAPP_URL); // перевірка
+
 // Команда /start — показує кнопку для відкриття Mini App
 bot.command("start", async (ctx) => {
     const user = ctx.from
@@ -47,7 +48,7 @@ bot.command("start", async (ctx) => {
                 {
                     reply_markup: {
                         inline_keyboard: [[
-                            { text: "🚗 Відкрити RideUA", web_app: { url: process.env.WEBAPP_URL } }
+                            { text: "🚗 Відкрити RideUA", web_app: { url: WEBAPP_URL } }
                         ]]
                     }
                 }
@@ -61,33 +62,43 @@ bot.command("start", async (ctx) => {
 
 // Обробляємо коли юзер поділився контактом
 bot.on("message:contact", async (ctx) => {
-    const contact = ctx.message.contact
-    const userId = ctx.from.id
+    try {
+        const contact = ctx.message.contact
+        const userId = ctx.from.id
 
-    if (contact.user_id === userId) {
-        await supabase.from('users').update({
-            phone: contact.phone_number
-        }).eq('id', userId)
+        if (contact.user_id === userId) {
+            const { error } = await supabase
+                .from('users')
+                .update({ phone: contact.phone_number })
+                .eq('id', userId)
 
-        // Спочатку прибираємо клавіатуру з кнопкою контакту
-        await ctx.reply("✅ Номер збережено!", {
-            reply_markup: { remove_keyboard: true }
-        })
+            if (error) console.error('Помилка збереження телефону:', error.message)
 
-        // Потім окремим повідомленням — кнопка додатку
-        await ctx.reply("Тепер відкривай додаток 👇", {
-            reply_markup: {
-                inline_keyboard: [[
-                    { text: "🚗 Відкрити RideUA", web_app: { url: process.env.WEBAPP_URL } }
-                ]]
-            }
-        })
+            await ctx.reply("✅ Номер збережено!", {
+                reply_markup: { remove_keyboard: true }
+            })
+
+            await ctx.reply("Тепер відкривай додаток 👇", {
+                reply_markup: {
+                    inline_keyboard: [[
+                        { text: "🚗 Відкрити RideUA", web_app: { url: WEBAPP_URL } }
+                    ]]
+                }
+            })
+        }
+    } catch (e) {
+        console.error('Помилка contact handler:', e.message)
+        await ctx.reply("Номер збережено! Відкрий додаток через кнопку меню внизу 👇")
     }
 })
 
 bot.command("help", async (ctx) => {
     await ctx.reply("Команди:\n/start — запустити бота\n/help — допомога");
 });
+
+bot.catch((err) => {
+    console.error('Bot error:', err.message)
+})
 
 bot.start();
 console.log("✅ Бот запущено!");
