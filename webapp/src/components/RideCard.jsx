@@ -102,7 +102,8 @@ export default function RideCard({ ride, tgUser, onBook }) {
                         <span className="driver-sub">⭐ {driver?.rating?.toFixed(1)} · {driver?.trips_count} поїздок</span>
                         {driver?.car_brand && driver?.car_model && (
                             <span className="driver-sub">
-                                🚗 {driver.car_brand} {driver.car_model}
+                                🚗 {driver.car_color ? driver.car_color + ' ' : ''}
+                                {driver.car_brand} {driver.car_model}
                                 {driver.car_year ? `, ${driver.car_year}` : ''}
                             </span>
                         )}

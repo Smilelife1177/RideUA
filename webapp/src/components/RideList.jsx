@@ -19,7 +19,7 @@ export default function RideList({ tgUser }) {
             .from('rides')
             .select(`
                 *,
-                users (name, username, rating, trips_count, car_brand, car_model, car_year, car_plate)
+                users (name, username, rating, trips_count, car_brand, car_model, car_year, car_plate, car_color)
             `)
             .eq('status', 'active')          // тільки активні
             .gt('seats_left', 0)             // є вільні місця

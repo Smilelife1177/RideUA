@@ -8,7 +8,7 @@ export default function Profile({ tgUser }) {
     const [stats, setStats] = useState({ asDriver: 0, asPassenger: 0 })
     const [loading, setLoading] = useState(true)
     const [editingCar, setEditingCar] = useState(false)
-    const [carForm, setCarForm] = useState({ brand: '', model: '', plate: '', year: '' })
+    const [carForm, setCarForm] = useState({ brand: '', model: '', plate: '', year: '', color: '' })
     const [savingCar, setSavingCar] = useState(false)
 
     useEffect(() => {
@@ -34,7 +34,8 @@ export default function Profile({ tgUser }) {
                 brand: userData.car_brand || '',
                 model: userData.car_model || '',
                 plate: userData.car_plate || '',
-                year: userData.car_year || ''
+                year: userData.car_year || '',
+                color: userData.car_color || ''
             })
         }
         setLoading(false)
@@ -46,7 +47,8 @@ export default function Profile({ tgUser }) {
             car_brand: carForm.brand || null,
             car_model: carForm.model || null,
             car_plate: carForm.plate ? carForm.plate.toUpperCase() : null,
-            car_year: carForm.year ? parseInt(carForm.year) : null
+            car_year: carForm.year ? parseInt(carForm.year) : null,
+            car_color: carForm.color || null
         }).eq('id', tgUser.id)
 
         if (error) {
@@ -114,6 +116,9 @@ export default function Profile({ tgUser }) {
                 {!editingCar && hasCar && (
                     <div className="car-info">
                         <div className="car-main">
+                            {profile.car_color && (
+                                <span className="car-color-dot" style={{ background: colorToHex(profile.car_color) }} />
+                            )}
                             {profile.car_brand} {profile.car_model}
                             {profile.car_year && <span className="car-year">{profile.car_year}</span>}
                         </div>
@@ -168,6 +173,21 @@ export default function Profile({ tgUser }) {
                                     onChange={e => setCarForm(f => ({ ...f, year: e.target.value }))}
                                 />
                             </div>
+                            <div className="form-group" style={{ marginBottom: 10 }}>
+                                <label>Колір</label>
+                                <div className="color-picker-row">
+                                    {['Білий', 'Чорний', 'Сірий', 'Срібний', 'Червоний', 'Синій', 'Зелений', 'Бежевий', 'Коричневий', 'Жовтий', 'Помаранчевий'].map(color => (
+                                        <button
+                                            key={color}
+                                            type="button"
+                                            className={`color-option ${carForm.color === color ? 'selected' : ''}`}
+                                            onClick={() => setCarForm(f => ({ ...f, color }))}
+                                        >
+                                            {color}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                         <button className="save-car-btn" onClick={saveCar} disabled={savingCar}>
                             {savingCar ? 'Зберігаємо...' : '💾 Зберегти'}
@@ -202,4 +222,14 @@ export default function Profile({ tgUser }) {
 
         </div>
     )
+}
+
+function colorToHex(color) {
+    const map = {
+        'Білий': '#f5f5f5', 'Чорний': '#222', 'Сірий': '#888',
+        'Срібний': '#c0c0c0', 'Червоний': '#e74c3c', 'Синій': '#2980b9',
+        'Зелений': '#27ae60', 'Бежевий': '#d4b896', 'Коричневий': '#7b5c3e',
+        'Жовтий': '#f1c40f', 'Помаранчевий': '#e67e22'
+    }
+    return map[color] || '#ccc'
 }
