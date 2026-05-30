@@ -5,3 +5,5 @@ node_modules/
 .env
 .env.local
 dist/
+CONTEXT.md
+GEMINI.md
